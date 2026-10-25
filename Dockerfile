@@ -1,25 +1,28 @@
-#Grab the latest alpine image
+
 FROM alpine:latest
 
-# Install python and pip
-RUN apk add --no-cache --update python3 py3-pip bash
-ADD ./webapp/requirements.txt /tmp/requirements.txt
+# Installer Python et les dépendances système
+RUN apk add --no-cache python3 py3-pip
 
-# Install dependencies
-RUN pip3 install --no-cache-dir -q -r /tmp/requirements.txt
-
-# Add our code
-ADD ./webapp /opt/webapp/
 WORKDIR /opt/webapp
 
-# Expose is NOT supported by Heroku
-# EXPOSE 5000 		
+# Copier les dépendances
+COPY webapp/requirements.txt /tmp/requirements.txt
 
-# Run the image as a non-root user
-RUN adduser -D myuser
-USER myuser
+# Créer un environnement virtuel et installer les dépendances
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --no-cache-dir -r /tmp/requirements.txt
 
-# Run the app.  CMD is required to run on Heroku
-# $PORT is set by Heroku			
-CMD gunicorn --bind 0.0.0.0:$PORT wsgi 
+# Rendre Python et Gunicorn accessibles
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PORT=5000
+
+# Copier le code de l'application
+COPY webapp/ /opt/webapp/
+
+# Démarrer l'application
+EXPOSE 5000
+
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT} wsgi"]
+
 
