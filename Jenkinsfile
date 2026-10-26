@@ -73,7 +73,7 @@ pipeline {
 
         stage('Login and Push Image on Docker Hub') {
             environment {
-                DOCKERHUB_PASSWORD = credentials('dockerhub')
+                DOCKERHUB_PASSWORD = credentials('fc5dbe4f-0db3-40ec-a9e8-9d64669e3e56')
             }
             steps {
                 sh '''
