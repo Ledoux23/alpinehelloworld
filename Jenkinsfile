@@ -48,10 +48,15 @@ pipeline {
         stage('Test image') {
             steps {
                 sh '''
-                    echo "Test de l'application"
+                    echo "Test de l'application depuis Jenkins"
+        
                     curl --fail --silent --show-error \
-                        "http://127.0.0.1:${PORT_EXPOSED}" |
+                        --retry 5 \
+                        --retry-connrefused \
+                        --retry-delay 2 \
+                        "http://172.17.0.1:${PORT_EXPOSED}" |
                         grep -q 'Hello world!'
+        
                     echo "Test HTTP réussi"
                 '''
             }
