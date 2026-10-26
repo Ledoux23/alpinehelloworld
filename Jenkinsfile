@@ -10,7 +10,7 @@ pipeline {
         )
         string(
             name: 'PARAM_PORT_EXPOSED',
-            defaultValue: '8080',
+            defaultValue: '8081',
             description: 'Port expose sur la machine hote'
         )
     }
