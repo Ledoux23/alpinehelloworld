@@ -48,8 +48,11 @@ pipeline {
         stage('Test image') {
             steps {
                 sh '''
-                    curl --fail --retry 5 --retry-connrefused --retry-delay 2 \
-                      "http://127.0.0.1:${PORT_EXPOSED}" | grep -q "Hello world!"
+                    echo "Test de l'application"
+                    curl --fail --silent --show-error \
+                        "http://127.0.0.1:${PORT_EXPOSED}" |
+                        grep -q 'Hello world!'
+                    echo "Test HTTP réussi"
                 '''
             }
         }
